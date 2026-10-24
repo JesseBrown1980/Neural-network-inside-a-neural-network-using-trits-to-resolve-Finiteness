@@ -135,14 +135,19 @@ To move from qualitative fluid relaxation to a quantitative physical theory, the
 
 ### 5.1 Equation of State & Sound Speed
 The mechanical pressure is computed from the trace of the momentum flux tensor:
-$$P = \frac{1}{3}\text{Tr}(\mathbf{\Pi}) = \frac{1}{3V}\sum_{\mathbf{x}} \sum_{i=0}^{26} n_i(\mathbf{x}) |\mathbf{c}_i|^2 = \frac{E_{\text{kinetic}}}{3V}$$
+$$P = \frac{1}{3}\text{Tr}(\mathbf{\Pi}) = \frac{1}{3V}\sum_{\mathbf{x}} \sum_{i=0}^{26} n_i(\mathbf{x}) |\mathbf{c}_i|^2 = \frac{2E_{\text{kinetic}}}{3V}$$
 The adiabatic/isothermal speed of sound is:
 $$c_s = \sqrt{\frac{\partial P}{\partial \rho}} = \sqrt{\frac{P_0}{\rho_0}}$$
 
+In an **unweighted discrete lattice gas** (where each of the 27 velocity channels has identical integer capacity without polynomial weights):
+$$\sum_{i=0}^{26} |\mathbf{c}_i|^2 = 0 + 6(1) + 12(2) + 8(3) = 54 \implies \langle |\mathbf{c}|^2 \rangle = \frac{54}{27} = 2$$
+Therefore, for mean density $\rho_0$:
+$$P_0 = \frac{2}{3} \rho_0 \implies c_{s, \text{theory}} = \sqrt{\frac{2}{3}} \approx 0.816497 \, [\Delta x / \Delta t]$$
+
 **Measurement across 300 GB Substrate Sectors:**
-- **Sector 000**: $\rho_0 = 27.115$, $P_0 = 9.043 \implies c_s = 0.577493$ ($c_s^2 = 0.333498$).
-- **Sector 187 (Ground Zero)**: $\rho_0 = 27.005$, $P_0 = 9.008 \implies c_s = 0.577537$ ($c_s^2 = 0.333549$).
-- **Physical Ratio**: $c_s^2 / (1/3) = 1.000494$ ($0.049\%$ deviation from ideal monoatomic D3Q27 gas $c_s = 1/\sqrt{3} \approx 0.577350$).
+- **Sector 000**: $\rho_0 = 27.115$, $P_0 = 18.086 \implies c_s = 0.816698$ ($c_s^2 = 0.666996$).
+- **Sector 187 (Ground Zero)**: $\rho_0 = 27.005$, $P_0 = 18.015 \implies c_s = 0.816742$ ($c_s^2 = 0.667067$).
+- **Physical Ratio**: $c_s^2 / (2/3) = 1.000494$ ($0.049\%$ deviation from unweighted D3Q27 lattice gas theory).
 
 ### 5.2 Shear Decay & Effective Kinematic Viscosity ($\nu_{\text{eff}}$)
 According to the Navier–Stokes momentum equation with periodic boundary conditions, transverse sinusoidal shear decays exponentially with rate $\gamma = \nu_{\text{eff}} k_y^2$:
