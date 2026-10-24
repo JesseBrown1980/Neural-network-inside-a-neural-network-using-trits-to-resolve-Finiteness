@@ -1,0 +1,6 @@
+*.exe
+*.o
+*.obj
+reproduced_results.csv
+results.csv
+local_results.csv
