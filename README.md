@@ -1,33 +1,129 @@
-# Effective Viscosity & Pressure from Discrete Dynamics in Trits
-
-> **Quantitative extraction of hydrodynamic transport coefficients, equation of state pressure, and speed of sound from an exact-arithmetic D3Q27 ternary lattice gas coupled to the 300 GB Host8 process room substrate.**
+# A neural network inside a neural network: trits resolve finiteness
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Arithmetic](https://img.shields.io/badge/Arithmetic-Exact%20Integer%20Only%20(No%20Floats)-brightgreen.svg)]()
-[![Sound Speed Match](https://img.shields.io/badge/Sound%20Speed-cs%20%3D%20sqrt(2%2F3)%20%3D%200.8165%20(0.049%25%20err)-success.svg)]()
-[![Kinematic Viscosity](https://img.shields.io/badge/Viscosity-nu__eff%20%3D%200.588%20%5Bdx%5E2%2Fdt%5D-brightgreen.svg)]()
-[![Reversibility](https://img.shields.io/badge/Micro--Reversibility-100%25%20Exact%20(139%2C968%20Trits)-success.svg)]()
+[![Arithmetic](https://img.shields.io/badge/Arithmetic-Exact%20Integer%20Only-brightgreen.svg)]()
+[![Reversibility](https://img.shields.io/badge/Micro--Reversibility-139%2C968%20Trits%20Exact-success.svg)]()
 
----
+Jesse Daniel Brown's nested ternary architecture, built and measured. An outer
+recurrent network of 27 shell modes discovers its own conserved quantity. Inside
+it, every cell of a 3D lattice runs a 27-channel ternary gate network. The inner
+network turns exact, reversible integer rules into measured fluid behaviour:
+viscosity, pressure, sound and vortex dynamics.
 
-## Abstract
+The structure follows the lineage of
+[THE RELIC REDISCOVERY](https://github.com/JesseBrown1980/THE-RELIC-REDISCOVERY):
+threefold waves grow outward from one invariant free centre, and each completed
+structure nests the one before it.
 
-This repository provides the complete mathematical theory, calibration code, and measured hydrodynamic data showing how **macroscopic physical fluid properties—specifically kinematic viscosity ($\nu_{\text{eff}}$), dynamic viscosity ($\mu_{\text{eff}}$), equation of state pressure ($P$), and acoustic speed ($c_s$)—emerge quantitatively from an exact integer-only discrete lattice dynamics operating on balanced-ternary trits**.
+## 1. The nested structure
 
-By coupling the D3Q27 discrete fluid dynamics directly to the **300 GB Host8 process room store** (`D:\ASOLARIA-HOST8-ROOMS-300G`), we sample macroscopic ensembles across tens of billions of ternary configurations to establish:
-1. **Lattice Speed of Sound**: Measured at $c_s = 0.8167 \pm 0.00004$ (within **$0.025\%$** of unweighted kinetic gas theory $c_s = \sqrt{2/3} \approx 0.816497$).
-2. **Effective Kinematic Viscosity**: Measured at $\nu_{\text{eff}} = 0.588 \pm 0.008 \, [\Delta x^2 / \Delta t]$ with an extraordinarily stable exponential decay plateau.
-3. **Incompressible Continuum Regime**: Measured at Reynolds number $Re \approx 6.8$ and Mach number $Ma \approx 0.27 < 0.3$.
-4. **Dynamical Standing Wave Acoustic Propagation**: Independent multi-scale dynamical acoustic tests across 15 trials confirm coherent wave propagation ($\ge 4.4$ full periods, $R^2 = 0.942$ at $L_x = 72$) with strictly zero added net momentum ($\Delta p_x \equiv 0$) and physical kinetic ballistic stiffening bounded by the lattice grid velocity.
+**Waves and landings.** Threefold waves 3 → 9 → 27 build the first landing.
+From each landing the next one grows by a widening multiplier:
 
-> [!NOTE]
-> **Peer Review & Calibration Response**: See [PEER_REVIEW_AND_CALIBRATION_RESPONSE.md](PEER_REVIEW_AND_CALIBRATION_RESPONSE.md) for the detailed resolution of the factor-of-two pressure correction ($P = \frac{2E}{3V}$), the analytical derivation of why unweighted D3Q27 lattice gases have acoustic speed $c_s = \sqrt{2/3}$ rather than the polynomial-weighted LBM value $1/\sqrt{3}$, and the complete 15-trial standing-wave convergence table.
+```text
+landings      27 → 243 → 6,561 → 531,441 → …      A_n = 3^(3 + n(n+3)/2)
+multipliers   ×9 → ×27 → ×81 → …
+```
 
----
+**The free centre.** Every structure holds one invariant centre C = 1 that is
+never multiplied, plus its outward addresses. In this repository the centre
+appears twice:
+- the 27 shell modes split as one conserved direction (the all-ones vector)
+  plus 26 that carry the dynamics;
+- the 27 lattice velocities split as one rest channel c = (0, 0, 0) plus 26
+  moving channels: 6 faces, 12 edges and 8 corners.
 
-## 1. Mathematical Formulas of the Finite Discrete Simulation
+| Level | Network | Nodes | Free centre |
+|---|---|---|---|
+| Outer | 27-mode ternary recurrence, triad tree 3 → 9 → 27 | 27 shell modes | conserved total Q, the all-ones direction |
+| Inner | D3Q27 gate network in every cell | 27 channels × 5,184 cells = 139,968 trits | rest channel c = 0 |
 
-### 1.1 Lattice Velocity Basis & State Representation
+## 2. The outer network: ternary recurrence and the invariant watcher
+
+**State.** 27 shell modes u_n over F_P with P = 1,000,081, arranged as a
+three-level triad tree: 3 primary branches, then 9 secondary rungs, then 27
+terminal modes.
+
+**Coupling.** Adjacent rungs interact through the convective transfer
+
+```text
+NL_n = u_n (u_{n+1} − u_{n−1}),   periodic: u_27 = u_0, u_{−1} = u_26.
+```
+
+**The invariant watcher (rank 26 of 27).** The transfer Jacobian has entries
+J_ii = u_{i+1} − u_{i−1}, J_{i,i+1} = u_i and J_{i,i−1} = −u_i. Every column
+sums to zero, so
+
+```text
+1ᵀ J = 0ᵀ   for every state u.
+```
+
+At a generic state the Jacobian has rank 26, so its left null space is exactly
+the all-ones line. The network finds the one conserved direction on its own.
+Measured: rank 26 for 200 of 200 random states mod P.
+
+**Strictly redistributive.** Σ NL_n telescopes to 0 (mod P). The nonlinear
+transfer moves the total Q(u) = Σ u_n between modes and never creates or
+destroys it.
+
+**Exact affine drift.** Shell n carries wavenumber k_n = k_0 · 3^n, so its
+dissipation scales as 9^n. With D = Σ_{n=0}^{26} 9^n ≡ 883,973 (mod P), every
+orbit satisfies
+
+```text
+Q(u_t) + t·ν·D ≡ Q(u_0)   (mod P)   for every t ≥ 0.
+```
+
+## 3. The inner network: a 27-channel gate network in every cell
+
+**Lattice.** 24 × 18 × 12 = 5,184 periodic cells. Each cell has 27 velocity
+channels c_i ∈ {−1, 0, 1}³, each holding an occupancy trit n_i ∈ {0, 1, 2}:
+139,968 trits in all.
+
+**Gates.** 288 four-channel collision gates. Each gate sorts its 81 input
+configurations by five exact integers: mass, the three momentum components and
+twice the kinetic energy. It then pairs configurations within each class into
+transpositions, so every gate is an involution, C ∘ C = I.
+- The uniform state (1, 1, 1, 1) is a fixed point of every gate.
+- All 288 × 81 = 23,328 configurations conserve mass, momentum and energy
+  exactly.
+
+**Streaming.** Each occupancy moves to x + c_i. Streaming is a permutation, so
+every tick is reversible.
+
+**Measured** with [`asolaria_ternary_fluid_v1.cpp`](asolaria_ternary_fluid_v1.cpp):
+- **Conservation.** Mass 139,945, momentum (−243, 57, −86) and 2E = 279,840
+  stay exact over all 288 steps.
+- **Reversibility.** 72 steps forward and 72 back restore all 139,968 trits.
+- **Relaxation.** Collisions relax the shear contrast from 31,101 to 273 by
+  tick 72, a 99.1% relaxation. Without collisions, free streaming returns
+  exactly to 31,101 every 72 ticks.
+
+| Tick | Free streaming | Gate network on |
+|---:|---:|---:|
+| 0 | 31,101 | 31,101 |
+| 12 | 3,071 | 11,815 |
+| 24 | 3,275 | 5,453 |
+| 36 | 31,101 | 3,047 |
+| 48 | 3,071 | 1,647 |
+| 72 | 31,101 (exact return) | 273 |
+
+**Taylor–Green and the null control** (24³ cells, 48 transitions;
+[audit](AUDIT_CLOSURE_STATIONARY_EQUILIBRIUM.md),
+[independent reimplementation](INDEPENDENT_ZERO_VORTEX_CONTROL_AUDIT.md)):
+- **Null control.** Started from the uniform state at U₀ = 0, the lattice stays
+  exactly still: enstrophy 0 and velocity 0 at all 49 ticks.
+- **Taylor–Green vortex.** At U₀ = 0.20, enstrophy grows from 0.00134 to
+  0.02762, all of it driven by the vortex. The largest local vorticity stays
+  at or below 0.774.
+
+**Host8.** Each 8-byte room stub of the 300 GB Host8 store unpacks into a
+27-trit word, one trit per shell mode. The calibration runs below draw their
+background microstates from those rooms.
+
+## 4. What the inner network measures: the lattice equations
+
+### 4.1 Lattice Velocity Basis & State Representation
 The microdynamics operates on a 3-dimensional periodic lattice $\mathbb{T}^3 = (L_x \times L_y \times L_z) = 24 \times 18 \times 12$ ($5,184$ spatial cells).
 At each cell $\mathbf{x}$, the state is represented by 27 discrete velocity channels corresponding to the D3Q27 stencil:
 $$\mathbf{c}_i = (c_{ix}, c_{iy}, c_{iz}) \in \{-1, 0, +1\}^3, \quad i \in \{0, 1, \dots, 26\}$$
@@ -35,7 +131,7 @@ Each channel holds an occupancy trit:
 $$n_i(\mathbf{x}, t) \in \{0, 1, 2\}$$
 yielding $5,184 \times 27 = 139,968$ discrete microscopic variables.
 
-### 1.2 Integer Conserved Quantities
+### 4.2 Integer Conserved Quantities
 At every cell $\mathbf{x}$, the local conserved integer moments are:
 - **Mass (Particle Number)**:
   $$\rho(\mathbf{x}, t) = \sum_{i=0}^{26} n_i(\mathbf{x}, t)$$
@@ -44,7 +140,7 @@ At every cell $\mathbf{x}$, the local conserved integer moments are:
 - **Twice Kinetic Energy**:
   $$2E(\mathbf{x}, t) = \sum_{i=0}^{26} n_i(\mathbf{x}, t) |\mathbf{c}_i|^2 \quad \text{where } |\mathbf{c}_i|^2 = c_{ix}^2 + c_{iy}^2 + c_{iz}^2 \in \{0, 1, 2, 3\}$$
 
-### 1.3 Involutive Collision Operators
+### 4.3 Involutive Collision Operators
 Collision consists of 288 deterministic 4-channel collision gates $C_g: \{0, 1, 2\}^4 \to \{0, 1, 2\}^4$.
 Each gate groups all $3^4 = 81$ input configurations by their exact integer invariant quintuple:
 $$\mathcal{K} = \left(\sum_{j=1}^4 d_j, \; \sum_{j=1}^4 d_j c_{jx}, \; \sum_{j=1}^4 d_j c_{jy}, \; \sum_{j=1}^4 d_j c_{jz}, \; \sum_{j=1}^4 d_j |\mathbf{c}_j|^2\right)$$
@@ -54,15 +150,15 @@ This guarantees:
 1. **Exact conservation** of mass, momentum, and kinetic energy with zero truncation error.
 2. **Exact microscopic reversibility** (undoing the collision sequence restores the exact microstate).
 
-### 1.4 Streaming Step
+### 4.4 Streaming Step
 Following collision $n_i^*(\mathbf{x}, t) = C(n_i(\mathbf{x}, t))$, particles stream along their velocity vectors:
 $$n_i(\mathbf{x} + \mathbf{c}_i, t + 1) = n_i^*(\mathbf{x}, t)$$
 
 ---
 
-## 2. Hydrodynamic Calibration Formulas
+## 5. What the inner network measures: hydrodynamic calibration
 
-### 2.1 Momentum Flux Tensor & Pressure
+### 5.1 Momentum Flux Tensor & Pressure
 The microscopic momentum flux tensor is defined as:
 $$\Pi_{\alpha \beta}(\mathbf{x}, t) = \sum_{i=0}^{26} n_i(\mathbf{x}, t) c_{i\alpha} c_{i\beta}$$
 In a continuous fluid, the momentum flux decomposes into an isotropic pressure and a viscous stress tensor:
@@ -76,7 +172,7 @@ $$P_0 = \frac{1}{3} \text{Tr}(\mathbf{\Pi}) = \frac{1}{3V} \sum_{\mathbf{x}} \su
 
 > **Calibration Note on Factor-of-Two**: In unit-mass kinetic theory, $2E = \sum n_i |\mathbf{c}_i|^2$. The isotropic pressure is $P = \frac{2E}{3V} = \frac{1}{3}\text{Tr}(\mathbf{\Pi})$, not $\frac{2E}{6V}$.
 
-### 2.2 Kinetic Speed of Sound in Unweighted D3Q27
+### 5.2 Kinetic Speed of Sound in Unweighted D3Q27
 From the equation of state $P(\rho)$, the isothermal speed of sound is:
 $$c_s = \sqrt{\frac{\partial P}{\partial \rho}} = \sqrt{\frac{P_0}{\rho_0}}$$
 
@@ -93,7 +189,7 @@ $$P_0 = \frac{1}{3} \langle |\mathbf{c}|^2 \rangle \rho_0 = \frac{2}{3} \rho_0 \
 $$c_{s, \text{theory}} = \sqrt{\frac{2}{3}} \approx 0.816497 \, [\Delta x / \Delta t]$$
 *(Note: Standard polynomial-weighted Lattice Boltzmann models tune directional weights $w_i$ to enforce $c_s = 1/\sqrt{3} \approx 0.577350$. An unweighted discrete integer lattice gas naturally possesses $c_s = \sqrt{2/3} \approx 0.816497$.)*
 
-### 2.3 Viscous Shear Stress & Kinematic Viscosity
+### 5.3 Viscous Shear Stress & Kinematic Viscosity
 For an incompressible Newtonian fluid, the viscous stress $\sigma_{xy}$ is proportional to the shear strain rate:
 $$\sigma_{xy} = -(\Pi_{xy} - \rho u_x u_y) = \mu_{\text{eff}} \left(\frac{\partial u_x}{\partial y} + \frac{\partial u_y}{\partial x}\right)$$
 
@@ -111,11 +207,11 @@ $$\mu_{\text{eff}} = \rho_0 \cdot \nu_{\text{eff}} \quad [\text{trits} / (\Delta
 
 ---
 
-## 3. Experimental Measurements on 300 GB Host8 Substrate
+## 6. What the inner network measures: results on the Host8 substrate
 
 The experiment was initialized using background microstates streamed directly from the **300 GB Host8 process room substrate** (`D:\ASOLARIA-HOST8-ROOMS-300G`, $3.75 \times 10^{10}$ rooms).
 
-### 3.1 Equation of State & Sound Speed
+### 6.1 Equation of State & Sound Speed
 
 | Substrate Location | Density $\rho_0$ [trits/cell] | Pressure $P_0$ | Measured Sound Speed $c_s$ | Theoretical $c_{s, \text{theory}} = \sqrt{2/3}$ | Relative Error |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -124,7 +220,7 @@ The experiment was initialized using background microstates streamed directly fr
 
 Ratio $c_s^2 / (2/3) = 1.000494$ ($0.049\%$ deviation from unweighted lattice gas theory).
 
-### 3.2 Shear Decay & Viscous Plateau
+### 6.2 Shear Decay & Viscous Plateau
 
 | Tick $t$ | Shear Contrast $S(t)$ | Logarithmic Ratio $\ln(S_0 / S_t)$ | Instantaneous Decay $\gamma$ | Effective Viscosity $\nu_{\text{eff}}$ $[\Delta x^2 / \Delta t]$ |
 |:---:|:---:|:---:|:---:|:---:|
@@ -145,7 +241,7 @@ Ratio $c_s^2 / (2/3) = 1.000494$ ($0.049\%$ deviation from unweighted lattice ga
 - **Reynolds Number**: $Re = \frac{U L}{\nu_{\text{eff}}} \approx 6.8$ (laminar Stokes flow).
 - **Mach Number**: $Ma = \frac{U}{c_s} = \frac{0.221}{0.8167} \approx 0.270$ (low-Mach weakly compressible regime).
 
-### 3.3 Direct Dynamical Acoustic Standing Wave Experiment (V3)
+### 6.3 Direct Dynamical Acoustic Standing Wave Experiment (V3)
 
 To confirm sound propagation independently without assuming an equation of state, [`asolaria_acoustic_pulse_propagation.cpp`](asolaria_acoustic_pulse_propagation.cpp) evaluates 15 multi-scale simulations across 5 lattice sizes and 3 independent seeds with an extended observation window ($5 L_x$ ticks, $\ge 4.4$ full periods) and QR variable-projection damped fitting ([`acoustic_damped_fit.h`](acoustic_damped_fit.h)):
 
@@ -163,20 +259,20 @@ To confirm sound propagation independently without assuming an equation of state
 
 ---
 
-## 4. How-To Guide & Reproduction
+## 7. Reproduce
 
-### 4.1 Prerequisites
+### 7.1 Prerequisites
 - C++17 compatible compiler (`g++` 11+, Clang, or MSVC)
 - Python 3.8+ (for automated reproduction script)
 - Host8 process rooms substrate (optional, pinned fallback available in source)
 
-### 4.2 Build & Run (Single Command)
+### 7.2 Build & Run (Single Command)
 Run the automated validation script:
 ```bash
 python reproduce.py
 ```
 
-### 4.3 Manual Execution
+### 7.3 Manual Execution
 ```bash
 # 1. Compile Hydrodynamic Calibration Suite
 g++ -O3 -std=c++17 -Wall -Wextra -Werror -static asolaria_fluid_hydro_calibration.cpp -o asolaria_fluid_hydro_calibration
@@ -193,18 +289,18 @@ g++ -O3 -std=c++17 -Wall -Wextra -Werror -static asolaria_ternary_fluid_v1.cpp -
 ./asolaria_ternary_fluid_v1 results.csv
 ```
 
----
+## 8. Repository contents
 
-## 5. Repository Contents
-- [`asolaria_fluid_hydro_calibration.cpp`](asolaria_fluid_hydro_calibration.cpp): C++17 instrument for extracting viscosity, pressure, and sound speed from the 300 GB Host8 store.
-- [`asolaria_acoustic_pulse_propagation.cpp`](asolaria_acoustic_pulse_propagation.cpp): Direct dynamical density pulse propagation experiment tracking discrete wave displacement.
-- [`acoustic_damped_fit.h`](acoustic_damped_fit.h): Header-only QR variable-projection damped least-squares estimator (0 floats in microscopic collision logic).
-- [`test_acoustic_damped_fit.cpp`](test_acoustic_damped_fit.cpp): Verification unit tests for the QR variable-projection damped regression.
-- [`PEER_REVIEW_AND_CALIBRATION_RESPONSE.md`](PEER_REVIEW_AND_CALIBRATION_RESPONSE.md): Comprehensive response to peer review with full analytical derivation of $P = \frac{2E}{3V}$, $c_s = \sqrt{2/3}$, Sector 187 reconciliation, and viscosity windowing.
-- [`calibration_results.csv`](calibration_results.csv): Measured time-series calibration data.
-- [`acoustic_pulse_propagation_results.csv`](acoustic_pulse_propagation_results.csv): Measured multi-scale standing wave propagation metrics across 15 trials.
-- [`acoustic_mode_timeseries.csv`](acoustic_mode_timeseries.csv): Discrete differential acoustic Fourier mode time-series data.
-- [`asolaria_ternary_fluid_v1.cpp`](asolaria_ternary_fluid_v1.cpp): Core D3Q27 integer discrete fluid simulation.
-- [`asolaria_ternary_fluid_v1_results.csv`](asolaria_ternary_fluid_v1_results.csv): Reference checkpoints CSV.
-- [`reproduce.py`](reproduce.py): 1-click reproduction and verification runner.
-- [`README.md`](README.md): This report with complete mathematical formulations and data.
+| File | Role |
+|---|---|
+| [`asolaria_ternary_fluid_v1.cpp`](asolaria_ternary_fluid_v1.cpp) | The inner gate network: D3Q27 lattice, conservation, reversibility, relaxation |
+| [`asolaria_ternary_fluid_v1_results.csv`](asolaria_ternary_fluid_v1_results.csv) | Reference checkpoints |
+| [`asolaria_fluid_hydro_calibration.cpp`](asolaria_fluid_hydro_calibration.cpp) | Viscosity, pressure and sound speed from Host8 microstates |
+| [`asolaria_acoustic_pulse_propagation.cpp`](asolaria_acoustic_pulse_propagation.cpp), [`acoustic_damped_fit.h`](acoustic_damped_fit.h), [`test_acoustic_damped_fit.cpp`](test_acoustic_damped_fit.cpp) | Standing-wave acoustic experiment and its fit |
+| [`asolaria_taylor_green_regularity.cpp`](asolaria_taylor_green_regularity.cpp), [`independent_zero_vortex_control.py`](independent_zero_vortex_control.py), [`test_stationary.py`](test_stationary.py) | Taylor–Green vortex, null control and the stationary fixed point |
+| [`reproduce.py`](reproduce.py), [`verify.py`](verify.py) | One-command reproduction |
+| `*_results.csv`, `acoustic_mode_timeseries.csv`, `independent_zero_vortex_summary.csv` | Measured data |
+| [`PEER_REVIEW_AND_CALIBRATION_RESPONSE.md`](PEER_REVIEW_AND_CALIBRATION_RESPONSE.md), [`PEER_REVIEW_INITIALIZATION_RESPONSE.md`](PEER_REVIEW_INITIALIZATION_RESPONSE.md) | Calibration derivations: P = 2E/(3V), c_s = √(2/3) |
+| [`ASOLARIA_DISCRETE_FLUID_EXPERIMENT_README.md`](ASOLARIA_DISCRETE_FLUID_EXPERIMENT_README.md) | Original experiment specification |
+
+Theory and architecture: **Jesse Daniel Brown**.
