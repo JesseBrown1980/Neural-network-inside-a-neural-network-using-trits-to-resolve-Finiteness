@@ -16,7 +16,7 @@ import numpy as np
 
 import spec_brake as sb
 
-SEG = 16                 # bytes per segment
+SEG = int(os.environ.get("TW_SEG", "16"))   # bytes per segment (16 frozen run; 16384 = the 16K run)
 M = 81                   # segments per anchor run (one global virtual timeline)
 DS = [3, 9, 27]          # number of drafters
 LATS = [8, 64]           # message latency, ticks
@@ -59,8 +59,18 @@ class Agent:
         self.seg_memo, self.roll_memo = {}, {}
 
     def segment(self, ctx):
-        """Verified segment from a 5-byte context: speculative greedy, k = KSPEC."""
-        if ctx not in self.seg_memo:
+        """Verified segment. For SEG <= 64: speculative greedy, k = KSPEC, byte by byte.
+        Larger: the verifier's greedy text (identical by gate C3 of the brake run), with
+        exact cycle-skipping; gate C5 checks it against byte-by-byte generation."""
+        if SEG > 64:
+            if ctx not in self.seg_memo:
+                self.seg_memo[ctx] = greedy_run(self.ver, ctx, SEG)
+            return self.seg_memo[ctx]
+        return self.segment_direct(ctx)
+
+    def segment_direct(self, ctx):
+        """Speculative greedy, k = KSPEC, byte by byte."""
+        if ctx not in self.seg_memo or SEG > 64:
             out = bytearray(ctx)
             while len(out) - len(ctx) < SEG:
                 h = bytearray(out[-sb.VER_N:])
@@ -80,7 +90,10 @@ class Agent:
                         break
                 else:
                     out.append(self.ver.dist(h).greedy)
-            self.seg_memo[ctx] = bytes(out[len(ctx):len(ctx) + SEG])
+            res = bytes(out[len(ctx):len(ctx) + SEG])
+            if SEG > 64:
+                return res
+            self.seg_memo[ctx] = res
         return self.seg_memo[ctx]
 
     def guess(self, ctx, steps, use_verifier=False):
@@ -88,11 +101,28 @@ class Agent:
         key = (ctx, steps, use_verifier)
         model = self.ver if use_verifier else self.draft
         if key not in self.roll_memo:
-            out = bytearray(ctx)
-            for _ in range(steps * SEG):
-                out.append(model.dist(out[-sb.VER_N:]).greedy)
-            self.roll_memo[key] = bytes(out[-sb.VER_N:])
+            out = bytes(ctx) + greedy_run(model, ctx, steps * SEG, tail_only=True)
+            self.roll_memo[key] = out[-sb.VER_N:]
         return self.roll_memo[key]
+
+
+def greedy_run(model, ctx, n, tail_only=False):
+    """n bytes of a model's greedy text from a 5-byte context, exactly. The next byte
+    depends only on the last 5 bytes, so the text enters a cycle; jump ahead by index."""
+    state, seen, seq = bytes(ctx[-sb.VER_N:]), {}, []
+    while len(seq) < n:
+        if state in seen:
+            c = seen[state]
+            per = len(seq) - c
+            if tail_only:
+                k = max(0, n - sb.VER_N)
+                return bytes(seq[c + (j - c) % per] if j >= c else seq[j] for j in range(k, n))
+            return bytes(seq[j] if j < c else seq[c + (j - c) % per] for j in range(n))
+        seen[state] = len(seq)
+        b = model.dist(state).greedy
+        seq.append(b)
+        state = (state + bytes([b]))[-sb.VER_N:]
+    return bytes(seq[-sb.VER_N:]) if tail_only else bytes(seq)
 
 
 def speed(i):
@@ -245,8 +275,16 @@ def run(enwik, cache, outpath):
             an.append(p)
     lines = ["TWHDR|anchors=%d|M=%d|SEG=%d|KSPEC=%d|D=%s|L=%s|json=0"
              % (len(an), M, SEG, KSPEC, ",".join(map(str, DS)), ",".join(map(str, LATS)))]
+    c5 = 0
     for D in DS:
         agents = [Agent(os.path.join(cache, "D%d" % D, "s%d" % i)) for i in range(D)]
+        if SEG > 64:
+            for p in an:
+                ctx0 = data[p - sb.VER_N:p]
+                if agents[0].segment(ctx0) != agents[0].segment_direct(ctx0):
+                    c5 += 1
+            lines.append("TWC5|D=%d|checked=%d|fast_path_mismatch=%d|json=0" % (D, len(an), c5))
+            print(lines[-1], flush=True)
         for L in LATS:
             for mode in MODES:
                 tot = {"computations": 0, "rollbacks": 0, "mispredicts": 0, "messages": 0, "cascades": 0,
@@ -283,9 +321,11 @@ def run(enwik, cache, outpath):
 
 
 def combine(path):
-    rows = {}
+    rows, c5 = {}, []
     for line in open(path):
         parts = line.strip().split("|")
+        if parts[0] == "TWC5":
+            c5.append(int(dict(x.split("=", 1) for x in parts[1:] if "=" in x)["fast_path_mismatch"]))
         if parts[0] == "TW":
             f = dict(x.split("=", 1) for x in parts[1:] if "=" in x)
             rows[(int(f["D"]), int(f["L"]), f["mode"])] = f
@@ -296,6 +336,8 @@ def combine(path):
                                            int(rows[(D, L, "conservative")]["conservative_bound"])
                                            for D in DS for L in LATS)
     g["C3_oracle_no_rollback"] = all(int(rows[(D, L, "oracle")]["rollbacks"]) == 0 for D in DS for L in LATS)
+    if SEG > 64:
+        g["C5_fast_path_exact"] = len(c5) == len(DS) and all(x == 0 for x in c5)
     g["C4_coverage"] = len(rows) == len(DS) * len(LATS) * len(MODES) and \
         len({f["anchors_done"] for f in rows.values()}) == 1
     out = []
