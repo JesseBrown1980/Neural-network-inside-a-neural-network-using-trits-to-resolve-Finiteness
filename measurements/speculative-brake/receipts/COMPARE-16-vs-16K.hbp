@@ -1,0 +1,12 @@
+COMPARE|mode=optimistic|D=3|L=8|end_permille_16=24|end_permille_16k=22|local_permille_16=925|local_permille_16k=763|NOT_SLOWED|json=0
+COMPARE|mode=optimistic|D=3|L=64|end_permille_16=103|end_permille_16k=22|local_permille_16=455|local_permille_16k=763|SLOWED|json=0
+COMPARE|mode=optimistic|D=9|L=8|end_permille_16=111|end_permille_16k=98|local_permille_16=665|local_permille_16k=660|NOT_SLOWED|json=0
+COMPARE|mode=optimistic|D=9|L=64|end_permille_16=212|end_permille_16k=98|local_permille_16=570|local_permille_16k=660|SLOWED|json=0
+COMPARE|mode=optimistic|D=27|L=8|end_permille_16=137|end_permille_16k=105|local_permille_16=757|local_permille_16k=777|SLOWED|json=0
+COMPARE|mode=optimistic|D=27|L=64|end_permille_16=463|end_permille_16k=105|local_permille_16=475|local_permille_16k=777|SLOWED|json=0
+COMPARE|mode=optimistic_v|D=3|L=8|end_permille_16=23|end_permille_16k=22|local_permille_16=909|local_permille_16k=728|NOT_SLOWED|json=0
+COMPARE|mode=optimistic_v|D=3|L=64|end_permille_16=109|end_permille_16k=22|local_permille_16=461|local_permille_16k=728|SLOWED|json=0
+COMPARE|mode=optimistic_v|D=9|L=8|end_permille_16=119|end_permille_16k=84|local_permille_16=642|local_permille_16k=723|SLOWED|json=0
+COMPARE|mode=optimistic_v|D=9|L=64|end_permille_16=226|end_permille_16k=84|local_permille_16=556|local_permille_16k=723|SLOWED|json=0
+COMPARE|mode=optimistic_v|D=27|L=8|end_permille_16=133|end_permille_16k=110|local_permille_16=769|local_permille_16k=771|SLOWED|json=0
+COMPARE|mode=optimistic_v|D=27|L=64|end_permille_16=464|end_permille_16k=110|local_permille_16=464|local_permille_16k=771|SLOWED|json=0
