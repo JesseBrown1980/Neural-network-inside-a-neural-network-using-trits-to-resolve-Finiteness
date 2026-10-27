@@ -1,0 +1,10 @@
+SPECHDR|variant=order2|anchors=635|T=128|draft_order=2|verifier_order=5|json=0
+SPEC|variant=order2|k=1|anchors_done=635|cycles=55558|bytes=81485|accepted=25927|rolled_back=29631|exact_fail=0|ns=2443186134|reached=55558|accpos=25927|json=0
+SPEC|variant=order2|k=2|anchors_done=635|cycles=48137|bytes=81638|accepted=33501|rolled_back=62773|exact_fail=0|ns=2553040293|reached=48137,21676|accpos=21676,11825|json=0
+SPEC|variant=order2|k=3|anchors_done=635|cycles=44975|bytes=81801|accepted=36826|rolled_back=98099|exact_fail=0|ns=2583193434|reached=44975,19880,10620|accpos=19880,10620,6326|json=0
+SPEC|variant=order2|k=4|anchors_done=635|cycles=43141|bytes=81790|accepted=38649|rolled_back=133915|exact_fail=0|ns=2616951028|reached=43141,18896,10205,6000|accpos=18896,10205,6000,3548|json=0
+SPEC|variant=order2|k=6|anchors_done=635|cycles=42104|bytes=81959|accepted=39855|rolled_back=212769|exact_fail=0|ns=2837991934|reached=42104,17990,9553,5706,3433,2001|accpos=17990,9553,5706,3433,2001,1172|json=0
+SPEC|variant=order2|k=8|anchors_done=635|cycles=41599|bytes=81990|accepted=40391|rolled_back=292401|exact_fail=0|ns=3481712285|reached=41599,17840,9474,5655,3340,1930,1123,651|accpos=17840,9474,5655,3340,1930,1123,651,378|json=0
+SPEC|variant=order2|k=12|anchors_done=635|cycles=41410|bytes=82043|accepted=40633|rolled_back=456287|exact_fail=0|ns=4030068707|reached=41410,17727,9455,5559,3341,1952,1115,641,380,237,128,63|accpos=17727,9455,5559,3341,1952,1115,641,380,237,128,63,35|json=0
+SPEC|variant=order2|k=16|anchors_done=635|cycles=41253|bytes=81995|accepted=40742|rolled_back=619306|exact_fail=0|ns=3578822132|reached=41253,17592,9441,5578,3338,1947,1174,725,428,248,117,62,41,19,14,10|accpos=17592,9441,5578,3338,1947,1174,725,428,248,117,62,41,19,14,10,8|json=0
+SPEC|variant=order2|k=27|anchors_done=635|cycles=41274|bytes=81984|accepted=40710|rolled_back=1073688|exact_fail=0|ns=5041551971|reached=41274,17685,9314,5548,3328,1963,1173,721,428,237,133,73,41,27,18,8,8,5,0,0,0,0,0,0,0,0,0|accpos=17685,9314,5548,3328,1963,1173,721,428,237,133,73,41,27,18,8,8,5,0,0,0,0,0,0,0,0,0,0|json=0

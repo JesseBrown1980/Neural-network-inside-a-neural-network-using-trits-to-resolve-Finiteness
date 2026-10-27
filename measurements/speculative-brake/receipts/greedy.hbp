@@ -1,0 +1,10 @@
+SPECHDR|variant=greedy|anchors=635|T=128|draft_order=2|verifier_order=5|json=0
+SPEC|variant=greedy|k=1|anchors_done=635|cycles=53946|bytes=81491|accepted=27545|rolled_back=26401|exact_fail=0|ns=353160154|reached=53946|accpos=27545|json=0
+SPEC|variant=greedy|k=2|anchors_done=635|cycles=47391|bytes=81602|accepted=34211|rolled_back=60571|exact_fail=0|ns=342634265|reached=47391,25964|accpos=25964,8247|json=0
+SPEC|variant=greedy|k=3|anchors_done=635|cycles=46391|bytes=81614|accepted=35223|rolled_back=103950|exact_fail=0|ns=321823905|reached=46391,25131,7660|accpos=25131,7660,2432|json=0
+SPEC|variant=greedy|k=4|anchors_done=635|cycles=45735|bytes=81662|accepted=35927|rolled_back=147013|exact_fail=0|ns=362722623|reached=45735,24826,7141,2206|accpos=24826,7141,2206,1754|json=0
+SPEC|variant=greedy|k=6|anchors_done=635|cycles=45114|bytes=81686|accepted=36572|rolled_back=234112|exact_fail=0|ns=552031844|reached=45114,24260,6715,1789,1482,1196|accpos=24260,6715,1789,1482,1196,1130|json=0
+SPEC|variant=greedy|k=8|anchors_done=635|cycles=44788|bytes=81723|accepted=36935|rolled_back=321369|exact_fail=0|ns=506324599|reached=44788,23943,6540,1638,1357,1075,1009,705|accpos=23943,6540,1638,1357,1075,1009,705,668|json=0
+SPEC|variant=greedy|k=12|anchors_done=635|cycles=44597|bytes=81738|accepted=37141|rolled_back=498023|exact_fail=0|ns=525027461|reached=44597,23780,6403,1505,1224,942,876,572,535,361,333,307|accpos=23780,6403,1505,1224,942,876,572,535,361,333,307,303|json=0
+SPEC|variant=greedy|k=16|anchors_done=635|cycles=44535|bytes=81896|accepted=37361|rolled_back=675199|exact_fail=0|ns=748102566|reached=44535,23718,6341,1443,1162,880,814,510,473,299,271,245,241,241,241,241|accpos=23718,6341,1443,1162,880,814,510,473,299,271,245,241,241,241,241,241|json=0
+SPEC|variant=greedy|k=27|anchors_done=635|cycles=44447|bytes=82083|accepted=37636|rolled_back=1162433|exact_fail=0|ns=1141629613|reached=44447,23630,6253,1355,1074,792,726,422,385,211,183,157,153,153,153,153,153,153,153,153,153,153,153,153,153,153,153|accpos=23630,6253,1355,1074,792,726,422,385,211,183,157,153,153,153,153,153,153,153,153,153,153,153,153,153,153,153,153|json=0

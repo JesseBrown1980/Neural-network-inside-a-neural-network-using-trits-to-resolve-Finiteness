@@ -1,0 +1,10 @@
+SPECHDR|variant=null|anchors=635|T=128|draft_order=uniform|verifier_order=5|json=0
+SPEC|variant=null|k=1|anchors_done=635|cycles=78229|bytes=81302|accepted=3073|rolled_back=75156|exact_fail=0|ns=6501896062|reached=78229|accpos=3073|json=0
+SPEC|variant=null|k=2|anchors_done=635|cycles=78003|bytes=81310|accepted=3307|rolled_back=152699|exact_fail=0|ns=6452516938|reached=78003,3202|accpos=3202,105|json=0
+SPEC|variant=null|k=3|anchors_done=635|cycles=78066|bytes=81303|accepted=3237|rolled_back=230961|exact_fail=0|ns=6487403029|reached=78066,3160,76|accpos=3160,76,1|json=0
+SPEC|variant=null|k=4|anchors_done=635|cycles=78154|bytes=81304|accepted=3150|rolled_back=309466|exact_fail=0|ns=6459849662|reached=78154,3068,81,1|accpos=3068,81,1,0|json=0
+SPEC|variant=null|k=6|anchors_done=635|cycles=78165|bytes=81306|accepted=3141|rolled_back=465849|exact_fail=0|ns=7439248717|reached=78165,3054,84,3,0,0|accpos=3054,84,3,0,0,0|json=0
+SPEC|variant=null|k=8|anchors_done=635|cycles=78177|bytes=81297|accepted=3120|rolled_back=622296|exact_fail=0|ns=7875826616|reached=78177,3041,79,0,0,0,0,0|accpos=3041,79,0,0,0,0,0,0|json=0
+SPEC|variant=null|k=12|anchors_done=635|cycles=78151|bytes=81310|accepted=3159|rolled_back=934653|exact_fail=0|ns=8790595029|reached=78151,3060,98,1,0,0,0,0,0,0,0,0|accpos=3060,98,1,0,0,0,0,0,0,0,0,0|json=0
+SPEC|variant=null|k=16|anchors_done=635|cycles=78167|bytes=81314|accepted=3147|rolled_back=1247525|exact_fail=0|ns=8781693982|reached=78167,3068,78,1,0,0,0,0,0,0,0,0,0,0,0,0|accpos=3068,78,1,0,0,0,0,0,0,0,0,0,0,0,0,0|json=0
+SPEC|variant=null|k=27|anchors_done=635|cycles=78088|bytes=81318|accepted=3230|rolled_back=2105146|exact_fail=0|ns=9624403117|reached=78088,3148,79,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|accpos=3148,79,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|json=0
